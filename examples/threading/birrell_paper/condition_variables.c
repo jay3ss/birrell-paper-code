@@ -27,14 +27,16 @@ Mutex mutex;
 Condition non_empty;
 
 ListNode* head = NULL;
-bool item_available = true;
+bool item_available = false;
 
-void* consumer(void* args) {
+void* producer(void* args) {
     lock_mutex(mutex);
 
     ListNode* new_node = create_node('A' + rand() % 26);
     add_to_list(&head, new_node);
-    item_available = false;
+    item_available = true;
+
+    printf("Producer: Added node with data '%c'.\n", new_node->ch);
 
     signal(non_empty);
     unlock_mutex(mutex);
@@ -42,10 +44,10 @@ void* consumer(void* args) {
     return NULL;
 }
 
-void* producer() {
+void* consumer() {
     lock_mutex(mutex);
 
-    while (item_available == false) {
+    while (!item_available) {
         printf("Consumer: Waiting for item...\n");
         wait(non_empty, mutex);
     }
@@ -74,6 +76,8 @@ int main(int argc, char* argv[]) {
 
     destroy_mutex(mutex);
     destroy_condition(non_empty);
+
+    free_list(head);
 
     return 0;
 }
