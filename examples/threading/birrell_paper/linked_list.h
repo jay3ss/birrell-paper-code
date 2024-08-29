@@ -1,3 +1,6 @@
+#ifndef LINKED_LIST_H
+#define LINKED_LIST_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19,3 +22,4 @@ void free_list(ListNode* head);
 // Function to add a new node to the head of the list
 void add_to_list(ListNode** head_ref, ListNode* new_node);
 
+#endif // LINKED_LIST_H
